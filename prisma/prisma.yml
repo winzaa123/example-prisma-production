@@ -1,0 +1,21 @@
+endpoint: ${env:ENTPOINT_GRAPHQL}
+datamodel: 
+  - datamodel.prisma
+  - enums.prisma
+# secret: ${env:PRISMA_MANAGEMENT_API_SECRET}
+disableAuth: true
+
+generate:
+  - generator: typescript-client
+    output: ../app/generated/prisma-client/
+  - generator: javascript-client
+    output: ../app/generated/prisma-js-client/  
+
+# Ensures Prisma client is re-generated after a datamodel change.
+hooks:
+  post-deploy:
+    # - prisma generate
+    - npx nexus-prisma-generate --client ./app/generated/prisma-client --output ./app/generated/nexus-prisma # Runs the codegen tool from nexus-prisma.
+# Seeds initial data into the database by running a script.
+# seed:
+  # run: yarn ts-node ./prisma/seed.ts
